@@ -13,28 +13,27 @@ class ModelEvaluation:
     def __init__(self):
         pass
 
-    def eval_metrics(self,actual,pred):
+    def eval_metrics(self, actual, pred):
+        if len(actual) != len(pred):
+            raise ValueError("Found input variables with inconsistent numbers of samples")
         rmse = np.sqrt(mean_squared_error(actual, pred))
         mae = mean_absolute_error(actual, pred)
         r2 = r2_score(actual, pred)
         return rmse, mae, r2
     
-    def initiate_model_evaluation(self,train_array,test_array):
+    def initiate_model_evaluation(self, train_array, test_array):
         try:
-             X_test,y_test=(test_array[:,:-1], test_array[:,-1])
+            X_test, y_test = (test_array[:, :-1], test_array[:, -1])
 
-             model_path=os.path.join("artifacts","model.pkl")
-             model=load_object(model_path)
+            model_path = os.path.join("artifacts", "model.pkl")
+            model = load_object(model_path)
 
-             tracking_url_type_store=urlparse(mlflow.get_tracking_uri()).scheme
+            tracking_url_type_store = urlparse(mlflow.get_tracking_uri()).scheme
 
-             print(tracking_url_type_store)
+            with mlflow.start_run():
+                prediction = model.predict(X_test)
 
-             with mlflow.start_run():
-
-                prediction=model.predict(X_test)
-
-                (rmse,mae,r2)=self.eval_metrics(y_test,prediction)
+                (rmse, mae, r2) = self.eval_metrics(y_test, prediction)
 
                 mlflow.log_metric("rmse", rmse)
                 mlflow.log_metric("r2", r2)
@@ -45,6 +44,5 @@ class ModelEvaluation:
                 else:
                     mlflow.sklearn.log_model(model, "model")
 
-
         except Exception as e:
-            raise customexception(e,sys)
+            raise customexception(e, sys)

@@ -6,24 +6,23 @@ from src.exception.exception import customexception
 from src.logger.logging import logging
 from src.utils.utils import load_object
 
-
 def predict(features) -> pd.DataFrame:
     try:
-        preprocessor_path=os.path.join("artifacts","preprocessor.pkl")
-        model_path=os.path.join("artifacts","model.pkl")
+        preprocessor_path = os.path.join("artifacts", "preprocessor.pkl")
+        model_path = os.path.join("artifacts", "model.pkl")
 
-        preprocessor=load_object(preprocessor_path)
-        model=load_object(model_path)
+        preprocessor = load_object(preprocessor_path)
+        model = load_object(model_path)
 
-        scaled_fea=preprocessor.transform(features)    
-        pred=model.predict(scaled_fea)
+        scaled_fea = preprocessor.transform(features)
+        pred = model.predict(scaled_fea)
 
         return pred
 
     except Exception as e:
-        raise customexception(e,sys)
-    
-if __name__ == "__main__":
+        raise customexception(e, sys)
+
+def main():
     parser = argparse.ArgumentParser(description="Predict house price based on features")
     parser.add_argument("--income", type=float, required=True, help="Avg. Area Income")
     parser.add_argument("--house_age", type=float, required=True, help="Avg. Area House Age")
@@ -48,3 +47,6 @@ if __name__ == "__main__":
 
     pred = predict(features_df)
     print(f"Predicted House Price: {pred[0]}")
+
+if __name__ == "__main__":
+    main()

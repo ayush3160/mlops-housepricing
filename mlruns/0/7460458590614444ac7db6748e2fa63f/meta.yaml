@@ -1,0 +1,15 @@
+artifact_uri: file:///home/ayush22/projects/mlops/house-pricing/mlruns/0/7460458590614444ac7db6748e2fa63f/artifacts
+end_time: 1737613170478
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7460458590614444ac7db6748e2fa63f
+run_name: capricious-gull-221
+run_uuid: 7460458590614444ac7db6748e2fa63f
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1737613170462
+status: 4
+tags: []
+user_id: ayush22
