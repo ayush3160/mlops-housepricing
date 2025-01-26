@@ -10,12 +10,19 @@ app = FastAPI()
 
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/",response_class=HTMLResponse)
+@app.get("/", response_class=HTMLResponse)
 def serve_homepage():
+    """
+    Serve the homepage HTML file.
+    """
     file_path = os.path.join(os.getcwd(), "static", "index.html")
-    with open(file_path, "r") as file:
-        html_content = file.read()
-    return HTMLResponse(content=html_content) 
+    try:
+        with open(file_path, "r") as file:
+            html_content = file.read()
+        return HTMLResponse(content=html_content)
+    except FileNotFoundError:
+        return HTMLResponse(content="File not found", status_code=404)
+
 class Features(BaseModel):
     income: float
     house_age: float
@@ -24,8 +31,20 @@ class Features(BaseModel):
     population: float
     address: str
 
+def add_numbers(a, b):
+    """
+    Add two numbers.
+    :param a: First number
+    :param b: Second number
+    :return: Sum of a and b
+    """
+    return a + b
+
 @app.post("/predict")
 def predict(features: Features):
+    """
+    Predict house price based on input features.
+    """
     features_dict = {
         "Avg. Area Income": [features.income],
         "Avg. Area House Age": [features.house_age],
@@ -34,7 +53,7 @@ def predict(features: Features):
         "Area Population": [features.population],
         "Address": [features.address]
     }
-    
+
     features_df = pd.DataFrame(features_dict)
     prediction = predict_price(features_df)
-    return {"price": prediction[0]}    
+    return {"price": prediction[0]}
